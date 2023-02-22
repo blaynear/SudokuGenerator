@@ -1,1 +1,2 @@
-Sudoku Generator
+# SudokuGenerator
+A CUDA enabled backtracking Sudoku Generator
