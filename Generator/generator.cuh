@@ -23,6 +23,8 @@ public:
   __host__ unsigned int readFile();
   __host__ bool validate(int i, int j, int x, Cell **grid)
   __host__ void exterminate(int i, int j, int x, Cell **grid)
+  __host__ void clueSelection(int x, Cell **grid)
+  __host__ unsigned int getNextCell(int cell_ind);
 };
 
 #endif

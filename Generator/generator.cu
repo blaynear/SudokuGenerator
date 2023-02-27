@@ -35,15 +35,47 @@ __host__ Generator::Generator(unsigned int size){
   cudaMemcpy(d_size, &size, sizeof(unsigned int), cudaMemcpyHostToDevice);
   cudaCheckError();
   setPuzzle<<<1,this->blockSize>>>(d_size, d_puzzle);
-
-  /***********************************************************/
-  /*                    From here, implement:
-  /*                       Clue selection
-  /*                       Extermination
-  /***********************************************************/
   this->blockSize = getThreadCount(size * size);
   this->gridSize = getBlockCount(size * size, this->blockSize);
 }
+
+__host__ unsigned int getNextCell(int cell_ind){
+    return cell_ind + 1;
+}
+
+
+__host__ void Generator::clueSelection(int x, Cell **d) {
+
+    int x_sqrt = sqrt(x);
+    int num_cell = (int)pow(x, 2);
+    Cell arr[num_cell];
+    for (int i = 0; i < x; i++){
+        for (int j = 0; j < x; j++){
+            arr[i * x + j] = d[i][j];
+        }
+    }
+    for (int k = 0; k < x_sqrt; i++){
+        int path_index = 0;
+        while (path_index < num_cell){
+            if (path_index == -1)
+                break;
+            for (int i = 0; i < x; i++){
+                if (arr[path_index].numerals[i] == 1){
+                    arr[path_index].path[k] = arr[path_index].numerals[i];
+                    // validate function to check if numeral value is correct in the path
+                    bool validate_clue = true;
+                    if (validate_clue){
+                        path_index = getNextCell(path_index);
+                        break;
+                    } 
+                    // if not validate_clue, loop iterates over the active numeral list to find the 
+                    // next_numeral
+                }
+            }
+        }
+    }
+}
+
 
 __host__ bool Generator::validate(int i, int j, int x, Cell **grid) {
     int x_sqrt = (int)sqrt(x);
@@ -146,6 +178,8 @@ __host__ unsigned int Generator::readFile(){
             }
         }
     }
+
+    clueSelection(row, d);
 
     for (int i = 0; i < row; i++) {
         for (int j = 0; j < row; j++) {

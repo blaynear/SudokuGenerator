@@ -23,8 +23,10 @@ using namespace std;
 
 class Cell{
   unsigned int size;
+  unsigned int path_size;
   unsigned int *numerals; //need to track and update numeral list/size.
   unsigned int value; // keeping track of the numeral value of the cell (mainly for fixed numerals)
+  unsigned int *path;
 
   template<class t>
   __host__ t *allocateHost(unsigned int size);
@@ -33,6 +35,7 @@ class Cell{
 public:
   __host__ __device__ Cell(unsigned int size);
   __host__ __device__ unsigned int getSize();
+  __host__ __device__ unsigned int getNextNumeral(int num_ind);
 };
 
 #endif
